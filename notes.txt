@@ -1,0 +1,22 @@
+- versions
+    # php: PHP 8.1.10
+    # composer: Composer version 2.4.1
+    # node: v22.16.0
+    # npm: 10.9.2
+    # mysql: 8.0.30
+    # apache: 2.4.54
+
+- commands:
+    # composer create-project laravel/laravel:^10.* ecommerce-system
+    # composer require tymon/jwt-auth
+    # php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+    # php artisan jwt:secret
+    # php artisan make:controller AuthController
+    # php artisan make:model Account -m
+    # php artisan migrate
+    # npm install
+    # npm install -D tailwindcss@3.4.14 postcss autoprefixer
+	# npx tailwindcss init -p
+    # npm install vue@3 vue-router@4
+    # npm install @vitejs/plugin-vue --save-dev
+    # npm install vue-toastification@next
