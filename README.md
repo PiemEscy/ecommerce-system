@@ -34,6 +34,8 @@ git clone https://github.com/PiemEscy/ecommerce-system.git
 ### 2. Create the database
 CREATE DATABASE IF NOT EXISTS ecom_system_db;
 
-### 3. run the bash script for built-time installation (composer, npm, artisan migrations)
+### 3. Generate env file
+
+### 4. run the bash script for built-time installation (composer, npm, artisan migrations)
 ./setup.sh
 
