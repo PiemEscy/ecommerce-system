@@ -261,8 +261,8 @@
 
                     this.showConfirmation = false;
                     console.log('Checkout response:', response.data);
-                    toast.success("Order placed successfully!");
                     await this.emailUser();
+                    toast.success("Order placed successfully!");
                     this.cart = [];
 
                 } catch (error) {
