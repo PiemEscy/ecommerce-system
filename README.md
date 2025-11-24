@@ -1,8 +1,7 @@
 # E-Comm Platform
 
-A simple e-commerce platform built with **Vue 3**, **Tailwind CSS**, and **Laravel**.  
-Users can browse products, add them to the cart, checkout, and receive email notifications. Admin and authentication functionality are included.
-
+A simple e-commerce platform built with **Vue.JS**, **Tailwind CSS**, and **Laravel**.  
+Users can browse products, add them to the cart, checkout, and receive email notifications. 
 ---
 
 ## **Features**
