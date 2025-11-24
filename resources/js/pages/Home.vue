@@ -15,9 +15,9 @@
                     <button @click="$router.push('/login')" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
                         Login
                     </button>
-                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                    Register Account
-                </button>
+                    <button  @click="$router.push('/register')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                        Register Account
+                    </button>
                 </div>
 
                 <div class="md:hidden">

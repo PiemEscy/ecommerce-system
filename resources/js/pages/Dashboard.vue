@@ -61,9 +61,11 @@
 
                             <button 
                                 @click="addToCart(product)"
-                                class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                :disabled="isAddingToCart && activeProductId === product.id || isCheckingOut || isLoading"
+                                class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Add to Cart
+                                <span v-if="isAddingToCart && activeProductId === product.id" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full inline-block"></span>
+                                <span v-else>Add to Cart</span>
                             </button>
                         </div>
                     </div>
@@ -89,9 +91,9 @@
                             </div>
 
                             <div class="flex items-center space-x-1">
-                                <button @click="decreaseQty(item)" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">-</button>
+                                <button @click="decreaseQty(item)" :disabled="isCheckingOut || isLoading" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">-</button>
                                 <span class="font-medium w-6 text-center">{{ item.quantity }}</span>
-                                <button @click="increaseQty(item)" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">+</button>
+                                <button @click="increaseQty(item)" :disabled="isCheckingOut || isLoading" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">+</button>
                             </div>
 
                             <div class="w-24 text-right font-semibold">
@@ -106,11 +108,14 @@
                             <span>{{ formatAmount(cartTotal) }}</span>
                         </div>
 
-                        <button @click="confirmCheckout" 
-                                class="mt-5 w-full px-4 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700"
-                                :disabled="isCheckingOut">
-                            Checkout
-                        </button>
+                    <button 
+                        @click="confirmCheckout"
+                        :disabled="isCheckingOut || isLoading"
+                        class="mt-5 w-full px-4 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <span v-if="isCheckingOut" class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full inline-block"></span>
+                        <span v-else>Checkout</span>
+                    </button>
                     </div>
                     
                 </div>
@@ -122,11 +127,20 @@
                 <p class="mb-6">Are you sure you want to place this order?</p>
                 <div class="flex justify-between">
                     <button @click="showConfirmation = false" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
-                    <button @click="proceedToCheckout" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" :disabled="isCheckingOut">
-                        {{ isCheckingOut ? 'Processing...' : 'Confirm' }}
+                    <button 
+                        @click="proceedToCheckout" 
+                        :disabled="isCheckingOut || isLoading"
+                        class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <span v-if="isCheckingOut" class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full inline-block"></span>
+                        <span v-else>Confirm</span>
                     </button>
                 </div>
             </div>
+        </div>
+
+        <div v-if="isLoading" class="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]">
+            <div class="animate-spin h-12 w-12 border-4 border-white border-t-transparent rounded-full"></div>
         </div>
 
         <footer class="py-6 text-center text-gray-500 text-sm mt-auto">
@@ -149,6 +163,9 @@
                 isCheckingOut: false,
                 showConfirmation: false,
                 checkoutMessage: '',
+                isLoading: false,
+                isAddingToCart: false,
+                activeProductId: null,
             };
         },
         methods: {
@@ -178,18 +195,26 @@
                 this.$router.push('/login');
             },
 
-            addToCart(product) {
-                const existing = this.cart.find(item => item.id === product.id);
+            async addToCart(product) {
+                this.isAddingToCart = true;
+                this.activeProductId = product.id;
 
-                if (existing) {
-                    existing.quantity += Number(product.quantity);
-                } else {
-                    this.cart.push({
-                        ...product,
-                        quantity: Number(product.quantity)
-                    });
-                }
-                product.quantity = 1;
+                setTimeout(() => {
+                    const existing = this.cart.find(item => item.id === product.id);
+
+                    if (existing) {
+                        existing.quantity += Number(product.quantity);
+                    } else {
+                        this.cart.push({
+                            ...product,
+                            quantity: Number(product.quantity)
+                        });
+                    }
+
+                    product.quantity = 1;
+                    this.isAddingToCart = false;
+                    this.activeProductId = null;
+                }, 100);
             },
 
             decreaseQty(item) {
@@ -233,6 +258,9 @@
                     return;
                 }
 
+                this.isCheckingOut = true;
+                this.isLoading = true;
+
                 try {
                     const token = localStorage.getItem('token');
                     const user = await this.getUser();
@@ -252,15 +280,14 @@
                         items
                     };
 
-                    const response = await axios.post(`${import.meta.env.VITE_ECOM_CHECKOUT_SERVICE_URL}/api/checkout`, payload, {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'application/json',
-                        }
-                    });
+                    const response = await axios.post(
+                        `${import.meta.env.VITE_ECOM_CHECKOUT_SERVICE_URL}/api/checkout`,
+                        payload,
+                        { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }}
+                    );
 
                     this.showConfirmation = false;
-                    console.log('Checkout response:', response.data);
+
                     await this.emailUser();
                     toast.success("Order placed successfully!");
                     this.cart = [];
@@ -268,10 +295,14 @@
                 } catch (error) {
                     console.error("Checkout error:", error.response?.data || error);
                     toast.error("Failed to place order.");
+                } finally {
+                    this.isCheckingOut = false;
+                    this.isLoading = false;
                 }
             },
 
             confirmCheckout() {
+                const toast = useToast();
                 if (this.cart.length === 0) {
                     toast.error("Your cart is empty!");
                     return;
