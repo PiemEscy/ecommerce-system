@@ -14,17 +14,15 @@ Users can browse products, add them to the cart, checkout, and receive email not
 - Checkout with order confirmation
 - Email notification for order summary
 - Responsive design (desktop & mobile)
-- Loader and disabled buttons during API processes
 
 ---
 
 ## **Tech Stack**
 
-- **Frontend:** Vue 3, Tailwind CSS, Vue Router, Vuex (optional)
+- **Frontend:** Vue 3, Tailwind CSS, Vue Router
 - **Backend:** Laravel 10, PHP 8.1
 - **Database:** MySQL / PostgreSQL
 - **Authentication:** JWT Token based
-- **Email Service:** External email API (customizable)
 - **HTTP Requests:** Axios
 
 ---
