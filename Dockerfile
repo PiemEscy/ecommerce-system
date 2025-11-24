@@ -1,7 +1,6 @@
 # Use official PHP image with Apache
 FROM php:8.1-apache
 
-# Set working directory
 WORKDIR /var/www/html
 
 # Install system dependencies and PHP extensions
@@ -20,6 +19,9 @@ RUN apt-get update && apt-get install -y \
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Apache ServerName
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Copy Laravel project files
 COPY . .
