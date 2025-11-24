@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     npm \
     zip \
+    nano \
     curl \
     libzip-dev \
     libonig-dev \
