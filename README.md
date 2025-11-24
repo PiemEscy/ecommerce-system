@@ -18,9 +18,9 @@ Users can browse products, add them to the cart, checkout, and receive email not
 
 ## **Tech Stack**
 
-- **Frontend:** Vue 3, Tailwind CSS, Vue Router
+- **Frontend:** Vue.JS, Tailwind CSS, Vue Router
 - **Backend:** Laravel 10, PHP 8.1
-- **Database:** MySQL / PostgreSQL
+- **Database:** MySQL
 - **Authentication:** JWT Token based
 - **HTTP Requests:** Axios
 
